@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic Plan Monitoring Tool: MACRA &amp; USF 2027-2032 (Prototype)</title>
+<meta name="description" content="Prototype monitoring tool for the MACRA and Universal Service Fund 2027-2032 Strategic Plan. Demonstration only, placeholder data. Prepared by eCRG.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#19212E; --ink-2:#3A4456; --muted:#6C7689; --faint:#9AA3B2;
+    --page:#F3F4F6; --card:#FFFFFF; --line:#E4E7EC; --line-2:#EEF0F3;
+    --brand:#C0392B; --brand-deep:#8E2A20; --brand-tint:#FBEDEB;
+    --g:#2E7D52; --g-tint:#E6F2EB; --a:#C0892B; --a-tint:#FAF1DF; --r:#C0392B; --r-tint:#FBEDEB; --n:#8A93A3; --n-tint:#EEF0F3;
+    --radius:14px; --radius-sm:9px;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.05);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0; background:var(--page); color:var(--ink); font-family:"Inter",system-ui,sans-serif; font-size:15px; line-height:1.5; font-variant-numeric:tabular-nums;}
+  h1,h2,h3,.disp{font-family:"Space Grotesk","Inter",sans-serif; letter-spacing:-.01em; margin:0}
+  a{color:var(--brand-deep)}
+  .num{font-variant-numeric:tabular-nums}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px}
+  [hidden]{display:none !important}
+
+  /* ---------- LOGIN ---------- */
+  .login-screen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px}
+  .login-card{width:100%; max-width:410px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); padding:34px 32px}
+  .login-brand{display:flex; align-items:center; gap:11px; margin-bottom:24px}
+  .login-brand .name{font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:18px}
+  .login-brand .sub{font-size:11px; color:var(--faint); letter-spacing:.06em; text-transform:uppercase; margin-top:1px}
+  .login-card h1{font-size:22px; font-weight:600; margin-bottom:4px}
+  .login-card .lead{color:var(--muted); font-size:14px; margin-bottom:22px}
+  .form-field{display:flex; flex-direction:column; gap:6px; margin-bottom:15px}
+  .form-field label{font-size:12px; font-weight:600; color:var(--ink-2)}
+  .form-field input, .form-field select{font:inherit; font-size:14.5px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:11px 12px}
+  .form-field input:focus, .form-field select:focus{outline:2px solid var(--brand); outline-offset:1px; border-color:var(--brand)}
+  .btn-primary{font:inherit; font-size:15px; font-weight:600; color:#fff; background:var(--brand); border:0; border-radius:var(--radius-sm); padding:12px; width:100%; cursor:pointer; margin-top:6px; transition:background .15s}
+  .btn-primary:hover{background:var(--brand-deep)}
+  .btn-primary:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+  .demo-note{display:flex; gap:9px; align-items:flex-start; margin-top:20px; padding:11px 13px; background:var(--brand-tint); border-radius:var(--radius-sm); font-size:12.5px; color:var(--brand-deep); line-height:1.45}
+
+  /* ---------- APP NAV ---------- */
+  .appnav{background:var(--ink); color:#fff}
+  .appnav .wrap{display:flex; align-items:center; gap:18px; min-height:60px; flex-wrap:wrap; padding-top:8px; padding-bottom:8px}
+  .brandmark{display:flex; align-items:center; gap:11px; text-decoration:none; color:#fff}
+  .brandmark .name{font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:17px}
+  .brandmark .sub{font-size:11px; color:#A9B2C2; letter-spacing:.06em; text-transform:uppercase; margin-top:1px}
+  .navtabs{display:flex; gap:4px; margin-left:6px}
+  .navtab{font:inherit; font-size:13.5px; font-weight:600; color:#AEB7C6; background:transparent; border:0; padding:8px 14px; border-radius:8px; cursor:pointer; transition:all .15s}
+  .navtab[aria-current="true"]{background:rgba(255,255,255,.11); color:#fff}
+  .navtab:hover{color:#fff}
+  .navtab:focus-visible{outline:2px solid #fff; outline-offset:2px}
+  .appnav .spacer{flex:1}
+  .toggle{display:inline-flex; background:#222C3C; border:1px solid #2E3A4D; border-radius:999px; padding:3px}
+  .toggle button{font:inherit; font-size:13px; font-weight:600; color:#AEB7C6; background:transparent; border:0; padding:6px 15px; border-radius:999px; cursor:pointer; transition:all .18s ease}
+  .toggle button[aria-pressed="true"]{background:var(--brand); color:#fff}
+  .toggle button:focus-visible{outline:2px solid #fff; outline-offset:2px}
+  .demo-badge{display:inline-flex; align-items:center; gap:7px; background:rgba(192,57,43,.18); border:1px solid rgba(232,120,108,.5); color:#F4B6AD; font-weight:600; font-size:11px; letter-spacing:.07em; text-transform:uppercase; padding:5px 11px; border-radius:999px}
+  .demo-badge .dot{width:7px; height:7px; border-radius:50%; background:#E8786C}
+  .userchip{display:flex; align-items:center; gap:9px}
+  .userchip .avatar{width:30px; height:30px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:12px; font-family:"Space Grotesk",sans-serif}
+  .userchip .who{font-size:12.5px; color:#C6CDD9; line-height:1.2}
+  .userchip .who b{color:#fff; font-weight:600}
+  .btn-out{font:inherit; font-size:12.5px; font-weight:600; color:#AEB7C6; background:transparent; border:1px solid #2E3A4D; padding:7px 12px; border-radius:8px; cursor:pointer; transition:all .15s}
+  .btn-out:hover{color:#fff; border-color:#42506A}
+
+  /* ---------- shared subhead ---------- */
+  .subhead{background:var(--card); border-bottom:1px solid var(--line)}
+  .subhead .wrap{padding:22px 24px 20px}
+  .eyebrow{font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--brand); font-weight:600}
+  .subhead h1{font-size:25px; font-weight:600; margin:6px 0 4px}
+  .subhead .ref{color:var(--muted); font-size:13.5px}
+  .subhead .ref strong{color:var(--ink-2); font-weight:600}
+  .filters{display:flex; flex-wrap:wrap; gap:12px; margin-top:18px}
+  .field{display:flex; flex-direction:column; gap:5px}
+  .field label{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); font-weight:600}
+  .field select{font:inherit; font-size:14px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:9px 32px 9px 12px; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236C7689' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; min-width:150px}
+  .field select:focus-visible{outline:2px solid var(--brand); outline-offset:1px; border-color:var(--brand)}
+  .as-of{margin-left:auto; align-self:flex-end; font-size:12.5px; color:var(--muted)}
+  .as-of strong{color:var(--ink-2)}
+
+  main{padding:24px 0 8px}
+  section.block{margin-bottom:22px}
+  .grid-kpi{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+  .split{display:grid; grid-template-columns:1.55fr 1fr; gap:16px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+  .card-h{display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:18px 20px 0}
+  .card-h h2{font-size:15.5px; font-weight:600}
+  .card-h .hint{font-size:12px; color:var(--faint)}
+
+  .stat{padding:18px}
+  .stat .k{font-size:12px; letter-spacing:.03em; color:var(--muted); font-weight:500}
+  .stat .v{font-family:"Space Grotesk",sans-serif; font-size:34px; font-weight:600; margin:10px 0 2px; line-height:1}
+  .stat .v .unit{font-size:17px; color:var(--muted); font-weight:500; margin-left:2px}
+  .stat .d{font-size:12.5px}
+  .trend-up{color:var(--g); font-weight:600}
+  .trend-flat{color:var(--muted); font-weight:600}
+  .chip{display:inline-block; width:9px; height:9px; border-radius:3px}
+  .accent-bar{height:3px; border-radius:3px 3px 0 0; margin:-18px -18px 16px}
+
+  .pillars{display:flex; flex-direction:column; gap:16px; padding:18px 20px 22px}
+  .pillar{display:grid; grid-template-columns:1fr auto; gap:6px 14px; align-items:center}
+  .pillar .top{display:flex; align-items:center; gap:9px; min-width:0}
+  .pillar .pname{font-weight:600; font-size:14.5px; color:var(--ink)}
+  .pillar .persp{font-size:11.5px; color:var(--faint)}
+  .pillar .pct{font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:18px; text-align:right}
+  .bar{grid-column:1 / -1; height:9px; background:var(--line-2); border-radius:6px; overflow:hidden}
+  .bar > span{display:block; height:100%; border-radius:6px; width:0; transition:width 1s cubic-bezier(.22,.61,.36,1)}
+  .rag-dot{width:10px; height:10px; border-radius:50%; flex:none}
+  .is-g{background:var(--g)} .is-a{background:var(--a)} .is-r{background:var(--r)} .is-n{background:var(--n)}
+
+  .donut-wrap{display:flex; flex-direction:column; align-items:center; padding:8px 20px 22px}
+  .donut-center{text-anchor:middle}
+  .legend{width:100%; margin-top:6px; display:flex; flex-direction:column; gap:9px}
+  .legend .row{display:flex; align-items:center; gap:9px; font-size:13.5px}
+  .legend .row .lab{color:var(--ink-2)}
+  .legend .row .ct{margin-left:auto; font-weight:600; color:var(--ink)}
+
+  .chart-pad{padding:8px 16px 18px}
+  .chart-legend{display:flex; gap:18px; padding:0 24px; font-size:12.5px; color:var(--muted)}
+  .chart-legend span{display:inline-flex; align-items:center; gap:7px}
+  .ln{width:18px; height:3px; border-radius:2px; display:inline-block}
+
+  .tbl-scroll{overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  thead th{text-align:left; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); font-weight:600; padding:12px 16px; border-bottom:1px solid var(--line); white-space:nowrap; background:#FAFBFC}
+  tbody td{padding:13px 16px; border-bottom:1px solid var(--line-2); color:var(--ink-2); vertical-align:middle}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:#FAFBFC}
+  td .kpi-name{color:var(--ink); font-weight:500}
+  .pill{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px}
+  .pill .rag-dot{width:7px; height:7px}
+  .pill.g{background:var(--g-tint); color:#1E5C3A} .pill.a{background:var(--a-tint); color:#8A5E12}
+  .pill.r{background:var(--r-tint); color:#8E2A20} .pill.n{background:var(--n-tint); color:#5B6473}
+  .mini-bar{width:84px; height:7px; background:var(--line-2); border-radius:5px; overflow:hidden; display:inline-block; vertical-align:middle}
+  .mini-bar > span{display:block; height:100%; border-radius:5px}
+  td.right{text-align:right; font-variant-numeric:tabular-nums}
+
+  .usf{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border-radius:var(--radius); overflow:hidden; border:1px solid var(--line)}
+  .usf .cell{background:var(--card); padding:18px 20px}
+  .usf .k{font-size:12px; color:var(--muted); font-weight:500}
+  .usf .v{font-family:"Space Grotesk",sans-serif; font-size:27px; font-weight:600; margin:8px 0 3px}
+  .usf .v .unit{font-size:14px; color:var(--muted); font-weight:500}
+  .usf .sub{font-size:12px; color:var(--faint)}
+  .section-label{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); font-weight:600; margin:0 0 11px}
+
+  /* ---------- ENTRY FORM ---------- */
+  .entry-intro{display:flex; gap:9px; align-items:flex-start; margin:0 0 18px; padding:12px 15px; background:var(--brand-tint); border-radius:var(--radius-sm); font-size:13px; color:var(--brand-deep); line-height:1.5}
+  .entry-actions{display:flex; align-items:center; gap:14px; padding:16px 20px; border-top:1px solid var(--line-2); flex-wrap:wrap}
+  .btn-save{font:inherit; font-size:14px; font-weight:600; color:#fff; background:var(--brand); border:0; border-radius:var(--radius-sm); padding:11px 20px; cursor:pointer; transition:background .15s}
+  .btn-save:hover{background:var(--brand-deep)}
+  .btn-save:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+  .save-hint{font-size:12.5px; color:var(--muted)}
+  .inp-actual{font:inherit; font-size:13.5px; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:8px 10px; width:110px; font-variant-numeric:tabular-nums}
+  .inp-actual:focus{outline:2px solid var(--brand); outline-offset:1px; border-color:var(--brand)}
+  .sel-status{font:inherit; font-size:13px; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:8px 28px 8px 10px; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236C7689' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 9px center}
+  .sel-status:focus{outline:2px solid var(--brand); outline-offset:1px; border-color:var(--brand)}
+  td.locked{color:var(--faint)}
+
+  /* ---------- toast ---------- */
+  .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:13px 20px; border-radius:12px; box-shadow:0 10px 30px rgba(16,24,40,.25); font-size:13.5px; display:flex; align-items:center; gap:10px; opacity:0; pointer-events:none; transition:all .3s ease; z-index:50}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+  .toast .ok{width:20px; height:20px; border-radius:50%; background:var(--g); display:flex; align-items:center; justify-content:center}
+
+  footer{border-top:1px solid var(--line); margin-top:14px; padding:22px 0 36px; color:var(--muted); font-size:13px}
+  footer .wrap{display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center}
+  footer .disclaimer{display:inline-flex; align-items:center; gap:8px; color:var(--brand-deep); font-weight:500}
+  footer .spacer{flex:1}
+
+  @media (max-width:900px){
+    .grid-kpi{grid-template-columns:repeat(2,1fr)}
+    .split{grid-template-columns:1fr}
+    .usf{grid-template-columns:repeat(2,1fr)}
+    .userchip .who{display:none}
+  }
+  @media (max-width:540px){ .grid-kpi{grid-template-columns:1fr} .usf{grid-template-columns:1fr} .as-of{margin-left:0} }
+  @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+  .fade{opacity:0; transform:translateY(8px); animation:fade .5s ease forwards}
+  @keyframes fade{to{opacity:1; transform:none}}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN SCREEN ===================== -->
+<div id="screen-login" class="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <svg width="34" height="34" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" stroke="#C0392B" stroke-width="2"/>
+        <path d="M9 19c2-4 12-4 14 0" stroke="#19212E" stroke-width="2" stroke-linecap="round"/>
+        <path d="M11.5 15.5c1.4-2.4 7.6-2.4 9 0" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="16" cy="21" r="2" fill="#19212E"/>
+      </svg>
+      <span><span class="name">eCRG</span><br><span class="sub">Monitoring Suite</span></span>
+    </div>
+    <h1>Stakeholder sign in</h1>
+    <p class="lead">Access the MACRA &amp; USF strategic plan monitoring tool.</p>
+    <div class="form-field">
+      <label for="li-email">Work email</label>
+      <input id="li-email" type="email" placeholder="name@macra.mw" autocomplete="username">
+    </div>
+    <div class="form-field">
+      <label for="li-pass">Password</label>
+      <input id="li-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="form-field">
+      <label for="li-div">Division / unit</label>
+      <select id="li-div">
+        <option>Licensing</option>
+        <option>Spectrum</option>
+        <option>Consumer Affairs</option>
+        <option>Finance</option>
+        <option>Human Resources</option>
+        <option>ICT</option>
+        <option>USF Projects</option>
+        <option>Planning &amp; M&amp;E</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Sign in</button>
+    <div class="demo-note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-top:1px" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5" stroke-linecap="round"/></svg>
+      <span>Demonstration only. Any details will sign you in. No real account or password is required.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP (nav + screens) ===================== -->
+<div id="app" hidden>
+
+  <header class="appnav">
+    <div class="wrap">
+      <a class="brandmark" href="#" aria-label="eCRG" onclick="return false">
+        <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <circle cx="16" cy="16" r="15" stroke="#C0392B" stroke-width="2"/>
+          <path d="M9 19c2-4 12-4 14 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M11.5 15.5c1.4-2.4 7.6-2.4 9 0" stroke="#E8786C" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="16" cy="21" r="2" fill="#fff"/>
+        </svg>
+        <span><span class="name">eCRG</span><br><span class="sub">Monitoring Suite</span></span>
+      </a>
+      <nav class="navtabs" aria-label="Primary">
+        <button class="navtab" id="tab-entry" aria-current="true" onclick="showScreen('entry')">Data entry</button>
+        <button class="navtab" id="tab-dashboard" aria-current="false" onclick="showScreen('dashboard')">Dashboard</button>
+      </nav>
+      <div class="spacer"></div>
+      <div class="toggle" role="group" aria-label="Select entity">
+        <button id="btn-macra" aria-pressed="true" onclick="setEntity('macra')">MACRA</button>
+        <button id="btn-usf" aria-pressed="false" onclick="setEntity('usf')">USF</button>
+      </div>
+      <span class="demo-badge"><span class="dot"></span>Prototype</span>
+      <div class="userchip">
+        <span class="avatar" id="avatar">U</span>
+        <span class="who">Signed in as<br><b id="who-name">stakeholder</b></span>
+        <button class="btn-out" onclick="doLogout()">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ---------- ENTRY SCREEN ---------- -->
+  <div id="screen-entry">
+    <div class="subhead">
+      <div class="wrap">
+        <div class="eyebrow">Performance data entry</div>
+        <h1 id="entry-title">Update KPI results: MACRA</h1>
+        <div class="ref">Submit your division's actuals and status for the current period &nbsp;·&nbsp; Period <strong>FY 2027/28 Q2</strong></div>
+      </div>
+    </div>
+    <main class="wrap">
+      <p class="entry-intro">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-top:1px" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Enter the latest actual value for each indicator you are responsible for, set its status, then save. Updates flow straight to the dashboard KPI register.
+      </p>
+      <div class="card">
+        <div class="card-h"><h2>Indicators for this period</h2><span class="hint" id="entry-count"></span></div>
+        <div class="tbl-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:34%">Indicator</th>
+                <th>Perspective</th>
+                <th class="right">Target</th>
+                <th style="width:140px">Actual</th>
+                <th style="width:160px">Status</th>
+              </tr>
+            </thead>
+            <tbody id="entry-rows"></tbody>
+          </table>
+        </div>
+        <div class="entry-actions">
+          <button class="btn-save" onclick="saveEntry()">Save updates</button>
+          <span class="save-hint" id="save-hint">Changes are kept in this session for the demo.</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ---------- DASHBOARD SCREEN ---------- -->
+  <div id="screen-dashboard" hidden>
+    <div class="subhead">
+      <div class="wrap">
+        <div class="eyebrow">Strategic plan monitoring</div>
+        <h1 id="page-title">MACRA Strategic Plan 2027-2032</h1>
+        <div class="ref">Live performance against the strategy &nbsp;·&nbsp; Ref. <strong>MACRA-USF/IPDC/ECOS-SP/2026/06/01</strong></div>
+        <div class="filters">
+          <div class="field">
+            <label for="f-period">Reporting period</label>
+            <select id="f-period"><option>FY 2027/28 Q2</option><option>FY 2027/28 Q1</option><option>FY 2027/28 full year</option><option>Plan to date</option></select>
+          </div>
+          <div class="field">
+            <label for="f-pillar">Strategy pillar</label>
+            <select id="f-pillar"><option>All pillars</option><option>ICT development &amp; innovation</option><option>Business processes &amp; operations</option><option>Human capital &amp; service delivery</option><option>Financial management</option></select>
+          </div>
+          <div class="field">
+            <label for="f-status">Status</label>
+            <select id="f-status" onchange="filterTable(this.value)"><option value="all">All statuses</option><option value="g">On track</option><option value="a">At risk</option><option value="r">Off track</option><option value="n">Not started</option></select>
+          </div>
+          <div class="as-of">Data as of <strong>30 Sep 2027</strong> · next review 31 Dec 2027</div>
+        </div>
+      </div>
+    </div>
+    <main class="wrap">
+      <section class="block grid-kpi" id="kpi-cards" aria-label="Headline indicators"></section>
+      <section class="block split">
+        <div class="card">
+          <div class="card-h"><h2 id="scorecard-title">Balanced scorecard: MACRA pillars</h2><span class="hint">progress to annual target</span></div>
+          <div class="pillars" id="pillars"></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h2>Objectives by status</h2><span class="hint">this period</span></div>
+          <div class="donut-wrap">
+            <svg width="190" height="190" viewBox="0 0 190 190" id="donut" role="img" aria-label="Objectives by status"></svg>
+            <div class="legend" id="donut-legend"></div>
+          </div>
+        </div>
+      </section>
+      <section class="block card">
+        <div class="card-h"><h2>Cumulative strategy progress</h2><span class="hint">planned vs actual</span></div>
+        <div class="chart-legend"><span><i class="ln" style="background:var(--brand)"></i>Actual</span><span><i class="ln" style="background:#B9C0CC"></i>Planned</span></div>
+        <div class="chart-pad"><svg width="100%" height="240" viewBox="0 0 1000 240" preserveAspectRatio="none" id="trend" role="img" aria-label="Cumulative strategy progress"></svg></div>
+      </section>
+      <section class="block card">
+        <div class="card-h"><h2>KPI register</h2><span class="hint" id="kpi-count"></span></div>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th style="width:30%">Indicator</th><th>Perspective</th><th class="right">Target</th><th class="right">Actual</th><th style="width:140px">Progress</th><th>Status</th><th>Lead</th></tr></thead>
+            <tbody id="kpi-rows"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="block">
+        <p class="section-label">Universal access &amp; inclusion</p>
+        <div class="usf" id="usf-band"></div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <span class="disclaimer">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5" stroke-linecap="round"/></svg>
+        Prototype for demonstration only. All figures are placeholder data.
+      </span>
+      <span class="spacer"></span>
+      <span>Prepared by <strong style="color:var(--ink-2)">e-Communications Research Group (eCRG)</strong></span>
+      <span>·</span>
+      <span>Proof of concept for RFP MACRA-USF/IPDC/ECOS-SP/2026/06/01</span>
+    </div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span id="toast-msg">Saved</span></div>
+
+<script>
+const RAG = {g:'#2E7D52', a:'#C0892B', r:'#C0392B', n:'#8A93A3'};
+const RAG_LABEL = {g:'On track', a:'At risk', r:'Off track', n:'Not started'};
+
+const DATA = {
+  macra: {
+    title:'MACRA Strategic Plan 2027-2032',
+    scorecardTitle:'Balanced scorecard: MACRA pillars',
+    cards:[
+      {k:'Overall strategy progress', v:'62', unit:'%', d:'+5 pts vs last quarter', cls:'trend-up', accent:'var(--brand)'},
+      {k:'Objectives on track', v:'18', unit:'/ 27', d:'67% of strategic objectives', cls:'trend-flat', accent:'var(--g)'},
+      {k:'KPIs at risk', v:'6', unit:'', d:'flagged for management review', cls:'trend-flat', accent:'var(--a)'},
+      {k:'Budget utilisation', v:'58', unit:'%', d:'on profile for the period', cls:'trend-up', accent:'var(--ink-2)'}
+    ],
+    pillars:[
+      {name:'ICT development & innovation', persp:'Learning & growth', pct:71, rag:'g'},
+      {name:'Business processes & operations', persp:'Internal process', pct:64, rag:'a'},
+      {name:'Human capital & service delivery', persp:'Stakeholder', pct:58, rag:'a'},
+      {name:'Financial management', persp:'Stewardship', pct:49, rag:'r'}
+    ],
+    donut:[{lab:'On track', k:'g', ct:18},{lab:'At risk', k:'a', ct:5},{lab:'Off track', k:'r', ct:2},{lab:'Not started', k:'n', ct:2}],
+    planned:[8,17,27,38,50,62,74,85],
+    actual:[7,15,24,33,44,55,62,null],
+    rows:[
+      {n:'Licence applications processed within SLA', p:'Internal process', t:'90%', a:'82%', prog:82, s:'a', lead:'Licensing'},
+      {n:'Spectrum assignments completed', p:'Internal process', t:'120', a:'104', prog:87, s:'g', lead:'Spectrum'},
+      {n:'Consumer complaints resolved < 14 days', p:'Stakeholder', t:'95%', a:'91%', prog:91, s:'g', lead:'Consumer Affairs'},
+      {n:'Staff with completed performance agreements', p:'Learning & growth', t:'100%', a:'76%', prog:76, s:'a', lead:'Human Resources'},
+      {n:'Internal audit actions closed', p:'Stewardship', t:'100%', a:'48%', prog:48, s:'r', lead:'Finance'},
+      {n:'Digital regulatory platform rollout', p:'Learning & growth', t:'4 modules', a:'3', prog:75, s:'g', lead:'ICT'},
+      {n:'Quality-of-service audits conducted', p:'Stakeholder', t:'12', a:'0', prog:0, s:'n', lead:'Technical'}
+    ],
+    usf:[
+      {k:'Unserved population connected', v:'318k', sub:'target 500k by FY-end'},
+      {k:'Districts with new coverage', v:'9', unit:'/ 14', sub:'rural & hard-to-reach'},
+      {k:'Subsidy funds disbursed', v:'58', unit:'%', sub:'of approved allocation'},
+      {k:'Community projects completed', v:'21', sub:'schools, clinics, hubs'}
+    ]
+  },
+  usf: {
+    title:'Universal Service Fund Strategic Plan 2027-2032',
+    scorecardTitle:'Balanced scorecard: USF pillars',
+    cards:[
+      {k:'Overall strategy progress', v:'54', unit:'%', d:'+7 pts vs last quarter', cls:'trend-up', accent:'var(--brand)'},
+      {k:'Access objectives on track', v:'11', unit:'/ 18', d:'61% of strategic objectives', cls:'trend-flat', accent:'var(--g)'},
+      {k:'KPIs at risk', v:'4', unit:'', d:'flagged for management review', cls:'trend-flat', accent:'var(--a)'},
+      {k:'Fund disbursement rate', v:'58', unit:'%', d:'of approved allocation', cls:'trend-up', accent:'var(--ink-2)'}
+    ],
+    pillars:[
+      {name:'Access & coverage expansion', persp:'Stakeholder', pct:63, rag:'a'},
+      {name:'Digital inclusion & adoption', persp:'Stakeholder', pct:55, rag:'a'},
+      {name:'Fund governance & value for money', persp:'Stewardship', pct:67, rag:'g'},
+      {name:'Project delivery & sustainability', persp:'Internal process', pct:46, rag:'r'}
+    ],
+    donut:[{lab:'On track', k:'g', ct:11},{lab:'At risk', k:'a', ct:4},{lab:'Off track', k:'r', ct:2},{lab:'Not started', k:'n', ct:1}],
+    planned:[6,14,24,35,47,59,72,84],
+    actual:[5,12,20,29,40,50,54,null],
+    rows:[
+      {n:'Unserved population brought into coverage', p:'Stakeholder', t:'500k', a:'318k', prog:64, s:'a', lead:'Access'},
+      {n:'Rural sites deployed', p:'Internal process', t:'80', a:'52', prog:65, s:'a', lead:'Projects'},
+      {n:'Public institutions connected', p:'Stakeholder', t:'150', a:'132', prog:88, s:'g', lead:'Access'},
+      {n:'Digital literacy beneficiaries', p:'Stakeholder', t:'40,000', a:'27,500', prog:69, s:'g', lead:'Inclusion'},
+      {n:'Subsidy projects audited', p:'Stewardship', t:'100%', a:'72%', prog:72, s:'g', lead:'Governance'},
+      {n:'Cost per connection vs benchmark', p:'Stewardship', t:'<= benchmark', a:'+8%', prog:42, s:'r', lead:'Finance'},
+      {n:'O&M sustainability plans signed', p:'Internal process', t:'80', a:'0', prog:0, s:'n', lead:'Projects'}
+    ],
+    usf:[
+      {k:'Unserved population connected', v:'318k', sub:'target 500k by FY-end'},
+      {k:'Districts with new coverage', v:'9', unit:'/ 14', sub:'rural & hard-to-reach'},
+      {k:'Subsidy funds disbursed', v:'58', unit:'%', sub:'of approved allocation'},
+      {k:'Community projects completed', v:'21', sub:'schools, clinics, hubs'}
+    ]
+  }
+};
+
+let current = 'macra';
+let activeScreen = 'entry';
+
+function el(tag, cls, html){const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;}
+
+/* ---------- auth ---------- */
+function doLogin(){
+  const email = document.getElementById('li-email').value.trim();
+  const div = document.getElementById('li-div').value;
+  const name = email || (div + ' user');
+  document.getElementById('who-name').textContent = name;
+  document.getElementById('avatar').textContent = (name[0]||'U').toUpperCase();
+  document.getElementById('screen-login').hidden = true;
+  document.getElementById('app').hidden = false;
+  showScreen('dashboard');
+  window.scrollTo(0,0);
+}
+function doLogout(){
+  document.getElementById('app').hidden = true;
+  document.getElementById('screen-login').hidden = false;
+  document.getElementById('li-pass').value = '';
+  window.scrollTo(0,0);
+}
+
+/* ---------- screen switching ---------- */
+function showScreen(name){
+  activeScreen = name;
+  document.getElementById('screen-entry').hidden = (name!=='entry');
+  document.getElementById('screen-dashboard').hidden = (name!=='dashboard');
+  document.getElementById('tab-entry').setAttribute('aria-current', name==='entry');
+  document.getElementById('tab-dashboard').setAttribute('aria-current', name==='dashboard');
+  if(name==='entry') renderEntry(DATA[current]);
+  if(name==='dashboard') renderDashboard(DATA[current]);
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+/* ---------- entity ---------- */
+function setEntity(e){
+  current=e;
+  document.getElementById('btn-macra').setAttribute('aria-pressed', e==='macra');
+  document.getElementById('btn-usf').setAttribute('aria-pressed', e==='usf');
+  if(activeScreen==='entry') renderEntry(DATA[e]);
+  if(activeScreen==='dashboard') renderDashboard(DATA[e]);
+}
+
+/* ---------- entry form ---------- */
+function renderEntry(d){
+  document.getElementById('entry-title').textContent = 'Update KPI results: ' + (current==='macra'?'MACRA':'USF');
+  const tb = document.getElementById('entry-rows'); tb.innerHTML='';
+  d.rows.forEach((r,i)=>{
+    const tr = el('tr');
+    const opts = ['g','a','r','n'].map(k=>`<option value="${k}" ${r.s===k?'selected':''}>${RAG_LABEL[k]}</option>`).join('');
+    tr.innerHTML = `
+      <td><span class="kpi-name">${r.n}</span></td>
+      <td>${r.p}</td>
+      <td class="right locked">${r.t}</td>
+      <td><input class="inp-actual" id="ea-${i}" value="${r.a}" aria-label="Actual for ${r.n}"></td>
+      <td><select class="sel-status" id="es-${i}" aria-label="Status for ${r.n}">${opts}</select></td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('entry-count').textContent = d.rows.length + ' indicators';
+}
+function saveEntry(){
+  const d = DATA[current];
+  d.rows.forEach((r,i)=>{
+    const a = document.getElementById('ea-'+i); const s = document.getElementById('es-'+i);
+    if(a) r.a = a.value.trim();
+    if(s) r.s = s.value;
+  });
+  showToast('Updates saved. Open the Dashboard to see them in the KPI register.');
+}
+
+/* ---------- toast ---------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3600);
+}
+
+/* ---------- dashboard renderers ---------- */
+function renderDashboard(d){
+  document.getElementById('page-title').textContent = d.title;
+  renderCards(d); renderPillars(d); renderDonut(d); renderTrend(d); renderRows(d); renderUSF(d);
+}
+function renderCards(d){
+  const wrap = document.getElementById('kpi-cards'); wrap.innerHTML='';
+  d.cards.forEach((c,i)=>{
+    const card = el('div','card stat fade'); card.style.animationDelay=(i*60)+'ms';
+    card.innerHTML = `<div class="accent-bar" style="background:${c.accent}"></div><div class="k">${c.k}</div><div class="v num">${c.v}${c.unit?`<span class="unit">${c.unit}</span>`:''}</div><div class="d ${c.cls}">${c.d}</div>`;
+    wrap.appendChild(card);
+  });
+}
+function renderPillars(d){
+  document.getElementById('scorecard-title').textContent = d.scorecardTitle;
+  const wrap = document.getElementById('pillars'); wrap.innerHTML='';
+  d.pillars.forEach(p=>{
+    const row = el('div','pillar');
+    row.innerHTML = `<div class="top"><span class="rag-dot is-${p.rag}"></span><span style="min-width:0"><span class="pname">${p.name}</span><br><span class="persp">${p.persp} perspective</span></span></div><div class="pct num">${p.pct}%</div><div class="bar"><span data-w="${p.pct}" style="background:${RAG[p.rag]}"></span></div>`;
+    wrap.appendChild(row);
+  });
+  requestAnimationFrame(()=>setTimeout(()=>wrap.querySelectorAll('.bar > span').forEach(s=>s.style.width=s.dataset.w+'%'),60));
+}
+function renderDonut(d){
+  const svg = document.getElementById('donut'); svg.innerHTML='';
+  const ns='http://www.w3.org/2000/svg'; const total=d.donut.reduce((s,x)=>s+x.ct,0);
+  const cx=95,cy=95,r=68,sw=22; let a0=-Math.PI/2;
+  d.donut.forEach(seg=>{
+    const frac=seg.ct/total, a1=a0+frac*2*Math.PI, large=(a1-a0)>Math.PI?1:0;
+    const x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
+    const path=document.createElementNS(ns,'path');
+    path.setAttribute('d',`M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke',RAG[seg.k]); path.setAttribute('stroke-width',sw);
+    svg.appendChild(path); a0=a1+0.03;
+  });
+  const t1=document.createElementNS(ns,'text'); t1.setAttribute('x',cx); t1.setAttribute('y',cy-4); t1.setAttribute('class','donut-center'); t1.setAttribute('font-family','Space Grotesk'); t1.setAttribute('font-size','30'); t1.setAttribute('font-weight','600'); t1.setAttribute('fill','#19212E'); t1.textContent=total; svg.appendChild(t1);
+  const t2=document.createElementNS(ns,'text'); t2.setAttribute('x',cx); t2.setAttribute('y',cy+16); t2.setAttribute('class','donut-center'); t2.setAttribute('font-size','12'); t2.setAttribute('fill','#6C7689'); t2.textContent='objectives'; svg.appendChild(t2);
+  const lg=document.getElementById('donut-legend'); lg.innerHTML='';
+  d.donut.forEach(seg=>lg.appendChild(el('div','row',`<span class="chip" style="background:${RAG[seg.k]}"></span><span class="lab">${seg.lab}</span><span class="ct num">${seg.ct}</span>`)));
+}
+function renderTrend(d){
+  const svg=document.getElementById('trend'); if(!svg) return; svg.innerHTML='';
+  const ns='http://www.w3.org/2000/svg'; const W=1000,H=240,padL=44,padR=16,padT=14,padB=30;
+  const labels=['Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8']; const maxV=100,n=d.planned.length;
+  const X=i=>padL+i*(W-padL-padR)/(n-1); const Y=v=>padT+(1-v/maxV)*(H-padT-padB);
+  [0,25,50,75,100].forEach(g=>{const y=Y(g);const ln=document.createElementNS(ns,'line');ln.setAttribute('x1',padL);ln.setAttribute('x2',W-padR);ln.setAttribute('y1',y);ln.setAttribute('y2',y);ln.setAttribute('stroke','#EEF0F3');svg.appendChild(ln);const tx=document.createElementNS(ns,'text');tx.setAttribute('x',padL-8);tx.setAttribute('y',y+4);tx.setAttribute('text-anchor','end');tx.setAttribute('font-size','11');tx.setAttribute('fill','#9AA3B2');tx.textContent=g+'%';svg.appendChild(tx);});
+  labels.forEach((l,i)=>{const tx=document.createElementNS(ns,'text');tx.setAttribute('x',X(i));tx.setAttribute('y',H-8);tx.setAttribute('text-anchor','middle');tx.setAttribute('font-size','11');tx.setAttribute('fill','#9AA3B2');tx.textContent=l;svg.appendChild(tx);});
+  const line=(arr,color,w,dash)=>{let dd='';arr.forEach((v,i)=>{if(v==null)return;dd+=(dd?' L ':'M ')+X(i)+' '+Y(v);});const p=document.createElementNS(ns,'path');p.setAttribute('d',dd);p.setAttribute('fill','none');p.setAttribute('stroke',color);p.setAttribute('stroke-width',w);p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');if(dash)p.setAttribute('stroke-dasharray',dash);svg.appendChild(p);};
+  let area='';d.actual.forEach((v,i)=>{if(v==null)return;area+=(area?' L ':'M ')+X(i)+' '+Y(v);});
+  if(area){const lastI=d.actual.filter(v=>v!=null).length-1;area+=` L ${X(lastI)} ${Y(0)} L ${X(0)} ${Y(0)} Z`;const ap=document.createElementNS(ns,'path');ap.setAttribute('d',area);ap.setAttribute('fill','#C0392B');ap.setAttribute('opacity','0.07');svg.appendChild(ap);}
+  line(d.planned,'#B9C0CC',2,'6 5'); line(d.actual,'#C0392B',2.5);
+  d.actual.forEach((v,i)=>{if(v==null)return;const c=document.createElementNS(ns,'circle');c.setAttribute('cx',X(i));c.setAttribute('cy',Y(v));c.setAttribute('r',3.5);c.setAttribute('fill','#fff');c.setAttribute('stroke','#C0392B');c.setAttribute('stroke-width','2');svg.appendChild(c);});
+}
+function progPct(r){
+  const t=parseFloat(String(r.t).replace(/[^0-9.]/g,'')); const a=parseFloat(String(r.a).replace(/[^0-9.]/g,''));
+  if(isNaN(t)||isNaN(a)||t===0) return r.prog!=null?r.prog:0;
+  return Math.max(0, Math.min(100, Math.round(a/t*100)));
+}
+function renderRows(d){
+  const tb=document.getElementById('kpi-rows'); tb.innerHTML='';
+  d.rows.forEach(r=>{
+    const prog = progPct(r);
+    const tr=el('tr'); tr.dataset.status=r.s;
+    tr.innerHTML=`<td><span class="kpi-name">${r.n}</span></td><td>${r.p}</td><td class="right">${r.t}</td><td class="right">${r.a}</td><td><span class="mini-bar"><span style="width:${prog}%;background:${RAG[r.s]}"></span></span></td><td><span class="pill ${r.s}"><span class="rag-dot is-${r.s}"></span>${RAG_LABEL[r.s]}</span></td><td>${r.lead}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('kpi-count').textContent=d.rows.length+' indicators';
+  const f=document.getElementById('f-status').value; if(f&&f!=='all') filterTable(f);
+}
+function renderUSF(d){
+  const wrap=document.getElementById('usf-band'); wrap.innerHTML='';
+  d.usf.forEach(c=>wrap.appendChild(el('div','cell',`<div class="k">${c.k}</div><div class="v num">${c.v}${c.unit?`<span class="unit"> ${c.unit}</span>`:''}</div><div class="sub">${c.sub}</div>`)));
+}
+function filterTable(val){ document.querySelectorAll('#kpi-rows tr').forEach(tr=>{tr.style.display=(val==='all'||tr.dataset.status===val)?'':'none';}); }
+
+window.addEventListener('resize', ()=>{ if(activeScreen==='dashboard') renderTrend(DATA[current]); });
+document.getElementById('li-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
